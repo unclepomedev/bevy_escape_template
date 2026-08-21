@@ -1,0 +1,4 @@
+[package]
+name = "bevy_escape_core"
+version = "0.0.1"
+edition = "2024"
