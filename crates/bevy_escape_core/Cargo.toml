@@ -2,3 +2,6 @@
 name = "bevy_escape_core"
 version = "0.0.1"
 edition = "2024"
+description = ""
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/unclepomedev/bevy_escape_template"
