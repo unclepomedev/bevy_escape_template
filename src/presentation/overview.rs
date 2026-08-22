@@ -1,6 +1,6 @@
 use crate::domain::hotspot::{Hotspot1, Hotspot2};
 use crate::domain::solved::{Solution1, Solved};
-use crate::layout::calculate_hotspot_layout;
+use crate::layout::{calculate_hotspot_layout, HotspotLayout};
 use crate::state::ZoomState;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
@@ -15,8 +15,13 @@ pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<Primar
 
     let layout = calculate_hotspot_layout(window.width(), window.height());
 
+    draw_hotspot1(&mut commands, &layout);
+    draw_hotspot2(&mut commands, &layout);
+    draw_solution_indicator(&mut commands, &layout);
+}
+
+fn draw_hotspot1(commands: &mut Commands, layout: &HotspotLayout) {
     let light_blue_color = Color::srgb(0.55, 0.6, 0.9);
-    let light_red_color = Color::srgb(0.9, 0.6, 0.55);
 
     commands
         .spawn((
@@ -30,6 +35,10 @@ pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<Primar
             Pickable::default(),
         ))
         .observe(open_zoom1);
+}
+
+fn draw_hotspot2(commands: &mut Commands, layout: &HotspotLayout) {
+    let light_red_color = Color::srgb(0.9, 0.6, 0.55);
 
     commands
         .spawn((
@@ -43,7 +52,9 @@ pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<Primar
             Pickable::default(),
         ))
         .observe(open_zoom2);
+}
 
+fn draw_solution_indicator(commands: &mut Commands, layout: &HotspotLayout) {
     commands.spawn((
         SolutionIndicator,
         Sprite {
