@@ -1,6 +1,6 @@
 use crate::domain::hotspot::{Hotspot1, Hotspot2};
 use crate::domain::solved::{Solution1, Solved};
-use crate::layout::{calculate_hotspot_layout, HotspotLayout};
+use crate::layout::{HotspotLayout, calculate_hotspot_layout};
 use crate::state::ZoomState;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
