@@ -1,4 +1,5 @@
 use bevy_ecs::prelude::*;
+use std::any::type_name;
 
 /// A type-erased side effect that can be applied to the `World`.
 ///
@@ -11,6 +12,13 @@ pub trait Effect: Send + Sync + 'static {
 /// Blanket impl: any Bevy `Message` is automatically usable as an `Effect`.
 impl<M: Message> Effect for M {
     fn apply(self: Box<Self>, world: &mut World) {
+        // `World::write_message` silently drops the message when `Messages<M>` was never initialized via
+        // `app.add_message::<M>()`. Fail loudly instead.
+        assert!(
+            world.contains_resource::<Messages<M>>(),
+            "Call `app.add_message::<{ty}>()` before applying this effect.",
+            ty = type_name::<M>(),
+        );
         world.write_message(*self);
     }
 }
@@ -82,6 +90,16 @@ mod tests {
     }
 
     #[test]
+    #[should_panic(expected = "add_message")]
+    fn applying_an_unregistered_message_effect_panics_loudly() {
+        let mut world = World::new();
+        let effects: Vec<Box<dyn Effect>> = vec![Box::new(ShowMessageMsg {
+            text: "should never be silently dropped".to_string(),
+        })];
+        apply_effects(effects, &mut world);
+    }
+
+    #[test]
     fn mixed_effects_in_one_list() {
         let mut world = World::new();
         world.init_resource::<FlagStore>();
@@ -90,7 +108,7 @@ mod tests {
         let effects: Vec<Box<dyn Effect>> = vec![
             Box::new(SetDoorOpen { value: true }),
             Box::new(ShowMessageMsg {
-                text: "開いた".to_string(),
+                text: "opened".to_string(),
             }),
         ];
         apply_effects(effects, &mut world);
