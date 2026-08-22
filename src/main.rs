@@ -16,13 +16,13 @@ use crate::state::{AppState, ZoomState};
 use bevy::prelude::*;
 
 fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins)
-        .init_state::<AppState>()
-        .add_sub_state::<ZoomState>()
-        .init_resource::<InputBuffer>()
-        .add_systems(Startup, setup_camera)
-        .add_systems(Startup, draw_hotspots)
+    let mut app = App::new();
+
+    app.add_plugins(DefaultPlugins);
+    app.init_state::<AppState>().add_sub_state::<ZoomState>();
+    app.init_resource::<InputBuffer>();
+
+    app.add_systems(Startup, (setup_camera, draw_hotspots))
         .add_systems(OnEnter(ZoomState::Zoom1), spawn_zoom1_screen)
         .add_systems(OnExit(ZoomState::Zoom1), despawn_zoom_screen)
         .add_systems(
@@ -35,8 +35,8 @@ fn main() {
             (append_typed_digits, sync_input_field_display)
                 .chain()
                 .run_if(in_state(ZoomState::Zoom2)),
-        )
-        .run();
+        );
+    app.run();
 }
 
 fn setup_camera(mut commands: Commands) {
