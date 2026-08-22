@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+mod domain;
+mod layout;
 mod presentation;
 
 use presentation::view::draw_hotspots;

@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-use super::components::{Hotspot1, Hotspot2};
+use crate::domain::hotspot::{Hotspot1, Hotspot2};
+use crate::layout::calculate_hotspot_layout;
 
 pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<PrimaryWindow>>) {
     let window = windows
@@ -32,28 +33,4 @@ pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<Primar
         },
         Transform::from_xyz(layout.top_center_x, layout.top_row_y, 0.0),
     ));
-}
-
-struct HotspotLayout {
-    size: Vec2,
-    top_row_y: f32,
-    top_left_x: f32,
-    top_center_x: f32,
-}
-
-fn calculate_hotspot_layout(window_width: f32, window_height: f32) -> HotspotLayout {
-    let cell_width = window_width / 3.0;
-    let cell_height = window_height / 3.0;
-    let hotspot_size = Vec2::new(cell_width * 0.85, cell_height * 0.85);
-
-    let top_row_y = window_height / 2.0 - cell_height / 2.0;
-    let top_left_x = -window_width / 2.0 + cell_width / 2.0;
-    let top_center_x = 0.0;
-
-    HotspotLayout {
-        size: hotspot_size,
-        top_row_y,
-        top_left_x,
-        top_center_x,
-    }
 }
