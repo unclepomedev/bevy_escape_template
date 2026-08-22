@@ -1,9 +1,9 @@
 use super::{ZoomScreenElement, close_zoom_screen};
 use crate::domain::input_buffer::InputBuffer;
-use crate::domain::solved::{QuizAnswer, SetQuiz1Solution, WrongAnswerMessage, check_quiz1_answer};
+use crate::domain::solved::{WrongAnswerMessage, resolve_quiz1_effects};
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
-use bevy_escape_core::{Effect, apply_effects};
+use bevy_escape_core::apply_effects;
 
 #[derive(Component)]
 pub struct InputFieldDisplay;
@@ -109,14 +109,8 @@ fn on_confirm_click(
     input_buffer: Res<InputBuffer>,
     mut commands: Commands,
 ) {
-    let input_text = input_buffer.text.clone();
-    let answer = check_quiz1_answer(&input_text);
-
+    let effects = resolve_quiz1_effects(&input_buffer.text);
     commands.queue(move |world: &mut World| {
-        let effects: Vec<Box<dyn Effect>> = match answer {
-            QuizAnswer::Correct(solution) => vec![Box::new(SetQuiz1Solution { solution })],
-            QuizAnswer::Incorrect => vec![Box::new(WrongAnswerMessage { input: input_text })],
-        };
         apply_effects(effects, world);
     });
 }
