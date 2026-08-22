@@ -23,13 +23,13 @@ jobs:
       - name: Check version consistency
         shell: bash
         run: |
-          CRATE_VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "bevy_escape_template") | .version')
+          CRATE_VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "bevy_escape_core") | .version')
           TAG_VERSION=${GITHUB_REF_NAME#v}
 
           echo "Crate: $CRATE_VERSION, Tag: $TAG_VERSION"
 
           if [ "$CRATE_VERSION" != "$TAG_VERSION" ]; then
-            echo "::error::Version mismatch! bevy_escape_template ($CRATE_VERSION) != Tag ($TAG_VERSION)"
+            echo "::error::Version mismatch! bevy_escape_core ($CRATE_VERSION) != Tag ($TAG_VERSION)"
             exit 1
           fi
 
@@ -43,11 +43,11 @@ jobs:
         shell: bash
         run: |
           set -e
-          cargo publish --dry-run --locked
+          cargo publish -p bevy_escape_core --dry-run --locked
           for i in {1..10}; do
-            cargo publish --no-verify --locked && exit 0
+            cargo publish -p bevy_escape_core --no-verify --locked && exit 0
             echo "Attempt $i failed, retrying in 15s..."
             sleep 15
           done
-          echo "Failed to publish after 10 attempts"
+          echo "Failed to publish bevy_escape_core after 10 attempts"
           exit 1
