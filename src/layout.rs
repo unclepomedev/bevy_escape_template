@@ -6,6 +6,7 @@ pub struct HotspotLayout {
     pub top_row_y: f32,
     pub top_left_x: f32,
     pub top_center_x: f32,
+    pub top_right_x: f32,
 }
 
 pub fn calculate_hotspot_layout(window_width: f32, window_height: f32) -> HotspotLayout {
@@ -16,11 +17,13 @@ pub fn calculate_hotspot_layout(window_width: f32, window_height: f32) -> Hotspo
     let top_row_y = window_height / 2.0 - cell_height / 2.0;
     let top_left_x = -window_width / 2.0 + cell_width / 2.0;
     let top_center_x = 0.0;
+    let top_right_x = window_width / 2.0 - cell_width / 2.0;
 
     HotspotLayout {
         size,
         top_row_y,
         top_left_x,
         top_center_x,
+        top_right_x,
     }
 }
