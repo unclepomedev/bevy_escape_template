@@ -1,8 +1,12 @@
 use crate::domain::hotspot::{Hotspot1, Hotspot2};
+use crate::domain::solved::{Solution1, Solved};
 use crate::layout::calculate_hotspot_layout;
 use crate::state::ZoomState;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
+
+#[derive(Component)]
+pub struct SolutionIndicator;
 
 pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<PrimaryWindow>>) {
     let window = windows
@@ -39,6 +43,17 @@ pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<Primar
             Pickable::default(),
         ))
         .observe(open_zoom2);
+
+    commands.spawn((
+        SolutionIndicator,
+        Sprite {
+            color: Color::NONE,
+            custom_size: Some(layout.size),
+            ..default()
+        },
+        Transform::from_xyz(layout.top_right_x, layout.top_row_y, 0.0),
+        Visibility::Hidden,
+    ));
 }
 
 fn open_zoom1(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
@@ -47,4 +62,31 @@ fn open_zoom1(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomSt
 
 fn open_zoom2(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
     next_zoom.set(ZoomState::Zoom2);
+}
+
+pub fn sync_solution_indicator(
+    solved: Res<Solved>,
+    mut indicators: Query<(&mut Sprite, &mut Visibility), With<SolutionIndicator>>,
+) {
+    if !solved.is_changed() {
+        return;
+    }
+
+    let Ok((mut sprite, mut visibility)) = indicators.single_mut() else {
+        return;
+    };
+
+    match solved.quiz1 {
+        Solution1::Unsolved => {
+            *visibility = Visibility::Hidden;
+        }
+        Solution1::Answer3 => {
+            sprite.color = Color::srgb(0.2, 0.8, 0.2);
+            *visibility = Visibility::Visible;
+        }
+        Solution1::Answer12 => {
+            sprite.color = Color::srgb(0.6, 0.2, 0.8);
+            *visibility = Visibility::Visible;
+        }
+    }
 }

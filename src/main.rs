@@ -8,7 +8,7 @@ use crate::domain::input_buffer::{InputBuffer, reset_input_buffer};
 use crate::domain::solved::{Solved, WrongAnswerMessage, log_quiz1_changes};
 use crate::input::typing::append_typed_digits;
 use crate::presentation::{
-    overview::draw_hotspots,
+    overview::{draw_hotspots, sync_solution_indicator},
     zoom::despawn_zoom_screen,
     zoom::zoom1::spawn_zoom1_screen,
     zoom::zoom2::{show_wrong_answer_feedback, spawn_zoom2_screen, sync_input_field_display},
@@ -42,7 +42,8 @@ fn main() {
                 .chain()
                 .run_if(in_state(ZoomState::Zoom2)),
         )
-        .add_systems(Update, log_quiz1_changes);
+        .add_systems(Update, log_quiz1_changes)
+        .add_systems(Update, sync_solution_indicator);
 
     app.run();
 }
