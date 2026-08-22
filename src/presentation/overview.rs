@@ -1,8 +1,8 @@
-use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
-
 use crate::domain::hotspot::{Hotspot1, Hotspot2};
 use crate::layout::calculate_hotspot_layout;
+use crate::state::ZoomState;
+use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 
 pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<PrimaryWindow>>) {
     let window = windows
@@ -25,10 +25,7 @@ pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<Primar
             Transform::from_xyz(layout.top_left_x, layout.top_row_y, 0.0),
             Pickable::default(),
         ))
-        // TODO: TEMPORARY
-        .observe(|_click: On<Pointer<Click>>| {
-            info!("Hotspot1 clicked");
-        });
+        .observe(open_zoom1);
 
     commands
         .spawn((
@@ -41,7 +38,13 @@ pub fn draw_hotspots(mut commands: Commands, windows: Query<&Window, With<Primar
             Transform::from_xyz(layout.top_center_x, layout.top_row_y, 0.0),
             Pickable::default(),
         ))
-        .observe(|_click: On<Pointer<Click>>| {
-            info!("Hotspot2 clicked");
-        });
+        .observe(open_zoom2);
+}
+
+fn open_zoom1(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
+    next_zoom.set(ZoomState::Zoom1);
+}
+
+fn open_zoom2(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
+    next_zoom.set(ZoomState::Zoom2);
 }
