@@ -1,6 +1,10 @@
 use super::{ZoomScreenElement, close_zoom_screen};
+use crate::domain::input_buffer::InputBuffer;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
+
+#[derive(Component)]
+pub struct InputFieldDisplay;
 
 pub fn spawn_zoom2_screen(mut commands: Commands, windows: Query<&Window, With<PrimaryWindow>>) {
     let window = windows.single().expect("primary window should exist");
@@ -47,6 +51,7 @@ fn spawn_input_field(commands: &mut Commands) {
     ));
     commands.spawn((
         ZoomScreenElement,
+        InputFieldDisplay,
         Text2d::new(input_placeholder_text),
         TextColor(Color::BLACK),
         Transform::from_xyz(0.0, input_field_y, input_field_layer + 0.1),
@@ -79,4 +84,17 @@ fn spawn_confirm_button(commands: &mut Commands) {
         Text2d::new(confirm_button_label),
         Transform::from_xyz(0.0, confirm_button_y, confirm_button_layer + 0.1),
     ));
+}
+
+pub fn sync_input_field_display(
+    input_buffer: Res<InputBuffer>,
+    mut texts: Query<&mut Text2d, With<InputFieldDisplay>>,
+) {
+    if !input_buffer.is_changed() {
+        return;
+    }
+
+    for mut text in &mut texts {
+        text.0 = input_buffer.text.clone();
+    }
 }
