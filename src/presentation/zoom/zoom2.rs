@@ -1,7 +1,9 @@
 use super::{ZoomScreenElement, close_zoom_screen};
 use crate::domain::input_buffer::InputBuffer;
+use crate::domain::solved::{QuizAnswer, SetQuiz1Solution, WrongAnswerMessage, check_quiz1_answer};
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
+use bevy_escape_core::{Effect, apply_effects};
 
 #[derive(Component)]
 pub struct InputFieldDisplay;
@@ -76,14 +78,29 @@ fn spawn_confirm_button(commands: &mut Commands) {
             Transform::from_xyz(0.0, confirm_button_y, confirm_button_layer),
             Pickable::default(),
         ))
-        .observe(|_click: On<Pointer<Click>>| {
-            info!("confirm button clicked (no logic wired up yet)");
-        });
+        .observe(on_confirm_click);
     commands.spawn((
         ZoomScreenElement,
         Text2d::new(confirm_button_label),
         Transform::from_xyz(0.0, confirm_button_y, confirm_button_layer + 0.1),
     ));
+}
+
+fn on_confirm_click(
+    _click: On<Pointer<Click>>,
+    input_buffer: Res<InputBuffer>,
+    mut commands: Commands,
+) {
+    let input_text = input_buffer.text.clone();
+    let answer = check_quiz1_answer(&input_text);
+
+    commands.queue(move |world: &mut World| {
+        let effects: Vec<Box<dyn Effect>> = match answer {
+            QuizAnswer::Correct(solution) => vec![Box::new(SetQuiz1Solution { solution })],
+            QuizAnswer::Incorrect => vec![Box::new(WrongAnswerMessage { input: input_text })],
+        };
+        apply_effects(effects, world);
+    });
 }
 
 pub fn sync_input_field_display(

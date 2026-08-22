@@ -5,6 +5,7 @@ mod presentation;
 mod state;
 
 use crate::domain::input_buffer::{InputBuffer, reset_input_buffer};
+use crate::domain::solved::{Solved, WrongAnswerMessage, log_quiz1_changes};
 use crate::input::typing::append_typed_digits;
 use crate::presentation::{
     overview::draw_hotspots,
@@ -20,7 +21,8 @@ fn main() {
 
     app.add_plugins(DefaultPlugins);
     app.init_state::<AppState>().add_sub_state::<ZoomState>();
-    app.init_resource::<InputBuffer>();
+    app.init_resource::<InputBuffer>().init_resource::<Solved>();
+    app.add_message::<WrongAnswerMessage>();
 
     app.add_systems(Startup, (setup_camera, draw_hotspots))
         .add_systems(OnEnter(ZoomState::Zoom1), spawn_zoom1_screen)
@@ -35,7 +37,9 @@ fn main() {
             (append_typed_digits, sync_input_field_display)
                 .chain()
                 .run_if(in_state(ZoomState::Zoom2)),
-        );
+        )
+        .add_systems(Update, log_quiz1_changes);
+
     app.run();
 }
 
