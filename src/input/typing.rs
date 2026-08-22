@@ -12,12 +12,18 @@ pub fn append_typed_digits(
             continue;
         }
 
-        if let Key::Character(ref characters) = event.logical_key {
-            for character in characters.chars() {
-                if character.is_ascii_digit() {
-                    input_buffer.text.push(character);
+        match &event.logical_key {
+            Key::Backspace => {
+                input_buffer.text.pop();
+            }
+            Key::Character(characters) => {
+                for character in characters.chars() {
+                    if character.is_ascii_digit() {
+                        input_buffer.text.push(character);
+                    }
                 }
             }
+            _ => {}
         }
     }
 }
