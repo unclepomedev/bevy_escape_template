@@ -11,7 +11,7 @@ use crate::presentation::{
     overview::draw_hotspots,
     zoom::despawn_zoom_screen,
     zoom::zoom1::spawn_zoom1_screen,
-    zoom::zoom2::{spawn_zoom2_screen, sync_input_field_display},
+    zoom::zoom2::{show_wrong_answer_feedback, spawn_zoom2_screen, sync_input_field_display},
 };
 use crate::state::{AppState, ZoomState};
 use bevy::prelude::*;
@@ -34,7 +34,11 @@ fn main() {
         .add_systems(OnExit(ZoomState::Zoom2), despawn_zoom_screen)
         .add_systems(
             Update,
-            (append_typed_digits, sync_input_field_display)
+            (
+                append_typed_digits,
+                sync_input_field_display,
+                show_wrong_answer_feedback,
+            )
                 .chain()
                 .run_if(in_state(ZoomState::Zoom2)),
         )

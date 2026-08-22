@@ -37,7 +37,6 @@ impl Effect for SetQuiz1Solution {
     }
 }
 
-#[expect(dead_code)]
 #[derive(Message, Clone)]
 pub struct WrongAnswerMessage {
     pub input: String,

@@ -8,12 +8,16 @@ use bevy_escape_core::{Effect, apply_effects};
 #[derive(Component)]
 pub struct InputFieldDisplay;
 
+#[derive(Component)]
+pub struct FeedbackDisplay;
+
 pub fn spawn_zoom2_screen(mut commands: Commands, windows: Query<&Window, With<PrimaryWindow>>) {
     let window = windows.single().expect("primary window should exist");
 
     spawn_background(&mut commands, window);
     spawn_input_field(&mut commands);
     spawn_confirm_button(&mut commands);
+    spawn_feedback_display(&mut commands);
 }
 
 fn spawn_background(commands: &mut Commands, window: &Window) {
@@ -86,6 +90,20 @@ fn spawn_confirm_button(commands: &mut Commands) {
     ));
 }
 
+fn spawn_feedback_display(commands: &mut Commands) {
+    let feedback_layer = 11.0;
+    let feedback_y = -120.0;
+    let feedback_color = Color::srgb(0.8, 0.2, 0.2);
+
+    commands.spawn((
+        ZoomScreenElement,
+        FeedbackDisplay,
+        Text2d::new(""),
+        TextColor(feedback_color),
+        Transform::from_xyz(0.0, feedback_y, feedback_layer),
+    ));
+}
+
 fn on_confirm_click(
     _click: On<Pointer<Click>>,
     input_buffer: Res<InputBuffer>,
@@ -113,5 +131,16 @@ pub fn sync_input_field_display(
 
     for mut text in &mut texts {
         text.0 = input_buffer.text.clone();
+    }
+}
+
+pub fn show_wrong_answer_feedback(
+    mut wrong_answers: MessageReader<WrongAnswerMessage>,
+    mut texts: Query<&mut Text2d, With<FeedbackDisplay>>,
+) {
+    for wrong in wrong_answers.read() {
+        for mut text in &mut texts {
+            text.0 = format!("wrong: {}", wrong.input);
+        }
     }
 }
