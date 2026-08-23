@@ -1,0 +1,29 @@
+use bevy_escape_core::{
+    GiveItem as CoreGiveItem, Inventory as CoreInventory,
+    InventoryFullMessage as CoreInventoryFullMessage, RemoveItemAt as CoreRemoveItemAt,
+};
+use std::marker::PhantomData;
+
+pub const INVENTORY_CAPACITY: usize = 4;
+
+#[expect(dead_code)]
+#[derive(Eq, PartialEq, Hash, Clone, Copy, Debug)]
+pub enum ItemId {
+    Key1,
+    Key2,
+    Key3,
+    Key4,
+}
+
+pub type Inventory = CoreInventory<ItemId>;
+#[expect(dead_code)]
+pub type GiveItem = CoreGiveItem<ItemId>;
+pub type InventoryFullMessage = CoreInventoryFullMessage<ItemId>;
+
+#[expect(dead_code)]
+pub fn remove_item_at(index: usize) -> CoreRemoveItemAt<ItemId> {
+    CoreRemoveItemAt {
+        index,
+        item_type: PhantomData,
+    }
+}

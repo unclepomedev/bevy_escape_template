@@ -1,7 +1,6 @@
+use crate::Effect;
 use bevy_ecs::prelude::*;
 use std::marker::PhantomData;
-
-use crate::Effect;
 
 #[derive(Resource)]
 pub struct Inventory<Item: Send + Sync + 'static> {

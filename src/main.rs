@@ -5,6 +5,7 @@ mod presentation;
 mod state;
 
 use crate::domain::input_buffer::{InputBuffer, reset_input_buffer};
+use crate::domain::item::{INVENTORY_CAPACITY, Inventory, InventoryFullMessage};
 use crate::domain::solved::{Solved, WrongAnswerMessage, log_quiz1_changes};
 use crate::input::typing::append_typed_digits;
 use crate::presentation::{
@@ -21,8 +22,11 @@ fn main() {
 
     app.add_plugins(DefaultPlugins);
     app.init_state::<AppState>().add_sub_state::<ZoomState>();
-    app.init_resource::<InputBuffer>().init_resource::<Solved>();
-    app.add_message::<WrongAnswerMessage>();
+    app.init_resource::<InputBuffer>()
+        .init_resource::<Solved>()
+        .insert_resource(Inventory::new(INVENTORY_CAPACITY));
+    app.add_message::<WrongAnswerMessage>()
+        .add_message::<InventoryFullMessage>();
 
     app.add_systems(Startup, (setup_camera, draw_hotspots))
         .add_systems(OnEnter(ZoomState::Zoom1), spawn_zoom1_screen)
