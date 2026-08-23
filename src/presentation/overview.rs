@@ -3,7 +3,7 @@ use bevy::window::PrimaryWindow;
 use bevy_escape_core::{Effect, apply_effects};
 
 use crate::domain::hotspot::{Hotspot1, Hotspot2};
-use crate::domain::item::{GiveItem, ItemId};
+use crate::domain::item::{GiveItem, Inventory, ItemId};
 use crate::domain::solved::{Solution1, Solved};
 use crate::layout::{HotspotLayout, calculate_hotspot_layout};
 use crate::state::ZoomState;
@@ -84,12 +84,13 @@ fn open_zoom2(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomSt
 fn on_solution_indicator_click(
     _click: On<Pointer<Click>>,
     solved: Res<Solved>,
+    inventory: Res<Inventory>,
     mut commands: Commands,
 ) {
     let item = match solved.quiz1 {
-        Solution1::Answer3 => Some(ItemId::Key1),
-        Solution1::Answer12 => Some(ItemId::Key2),
-        Solution1::Unsolved => None,
+        Solution1::Answer3 if !inventory.has(&ItemId::Key1) => Some(ItemId::Key1),
+        Solution1::Answer12 if !inventory.has(&ItemId::Key2) => Some(ItemId::Key2),
+        _ => None,
     };
 
     let Some(item) = item else {
