@@ -4,6 +4,7 @@ use bevy::math::Vec2;
 pub struct HotspotLayout {
     pub size: Vec2,
     pub top_row_y: f32,
+    pub middle_row_y: f32,
     pub top_left_x: f32,
     pub top_center_x: f32,
     pub top_right_x: f32,
@@ -15,6 +16,7 @@ pub fn calculate_hotspot_layout(window_width: f32, window_height: f32) -> Hotspo
     let size = Vec2::new(cell_width * 0.85, cell_height * 0.85);
 
     let top_row_y = window_height / 2.0 - cell_height / 2.0;
+    let middle_row_y = top_row_y - cell_height;
     let top_left_x = -window_width / 2.0 + cell_width / 2.0;
     let top_center_x = 0.0;
     let top_right_x = window_width / 2.0 - cell_width / 2.0;
@@ -22,6 +24,7 @@ pub fn calculate_hotspot_layout(window_width: f32, window_height: f32) -> Hotspo
     HotspotLayout {
         size,
         top_row_y,
+        middle_row_y,
         top_left_x,
         top_center_x,
         top_right_x,

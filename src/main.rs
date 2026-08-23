@@ -7,12 +7,14 @@ mod state;
 use crate::domain::{
     input_buffer::{InputBuffer, reset_input_buffer},
     item::{INVENTORY_CAPACITY, Inventory, InventoryFullMessage, log_inventory_full},
+    progress::Progress,
+    selection::SelectedSlot,
     solved::{Solved, WrongAnswerMessage, log_quiz1_changes},
 };
 use crate::input::typing::append_typed_digits;
 use crate::presentation::{
     inventory_slots::{spawn_inventory_slots, sync_inventory_slots},
-    overview::{draw_hotspots, sync_solution_indicator},
+    overview::{draw_hotspots, sync_hotspot5_visibility, sync_solution_indicator},
     zoom::despawn_zoom_screen,
     zoom::zoom1::spawn_zoom1_screen,
     zoom::zoom2::{show_wrong_answer_feedback, spawn_zoom2_screen, sync_input_field_display},
@@ -27,6 +29,8 @@ fn main() {
     app.init_state::<AppState>().add_sub_state::<ZoomState>();
     app.init_resource::<InputBuffer>()
         .init_resource::<Solved>()
+        .init_resource::<Progress>()
+        .init_resource::<SelectedSlot>()
         .insert_resource(Inventory::new(INVENTORY_CAPACITY));
     app.add_message::<WrongAnswerMessage>()
         .add_message::<InventoryFullMessage>();
@@ -59,6 +63,7 @@ fn main() {
             sync_solution_indicator,
             sync_inventory_slots,
             log_inventory_full,
+            sync_hotspot5_visibility,
         ),
     );
 

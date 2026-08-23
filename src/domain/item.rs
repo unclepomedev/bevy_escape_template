@@ -20,7 +20,6 @@ pub type Inventory = CoreInventory<ItemId>;
 pub type GiveItem = CoreGiveItem<ItemId>;
 pub type InventoryFullMessage = CoreInventoryFullMessage<ItemId>;
 
-#[expect(dead_code)]
 pub fn remove_item_at(index: usize) -> CoreRemoveItemAt<ItemId> {
     CoreRemoveItemAt {
         index,
