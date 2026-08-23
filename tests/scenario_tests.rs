@@ -1,13 +1,14 @@
-#![cfg(test)]
-
 use bevy::app::App;
 use bevy_escape_core::{Effect, InventoryFullMessage, apply_effects};
-
-use crate::domain::clear::{ClearLabel, GameClear, SetGameClear};
-use crate::domain::item::{GiveItem, INVENTORY_CAPACITY, Inventory, ItemId, remove_item_at};
-use crate::domain::progress::{Progress, UnlockRect5};
-use crate::domain::selection::{SelectedSlot, SlotClickOutcome, resolve_slot_click};
-use crate::domain::solved::{Solution1, Solved, WrongAnswerMessage, resolve_quiz1_effects};
+use bevy_escape_template::domain::clear::{ClearLabel, GameClear, SetGameClear};
+use bevy_escape_template::domain::item::{
+    GiveItem, INVENTORY_CAPACITY, Inventory, ItemId, remove_item_at,
+};
+use bevy_escape_template::domain::progress::{Progress, UnlockRect5};
+use bevy_escape_template::domain::selection::{SelectedSlot, SlotClickOutcome, resolve_slot_click};
+use bevy_escape_template::domain::solved::{
+    Solution1, Solved, WrongAnswerMessage, resolve_quiz1_effects,
+};
 
 fn test_app() -> App {
     let mut app = App::new();

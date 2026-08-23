@@ -1,12 +1,5 @@
-mod domain;
-mod input;
-mod layout;
-mod presentation;
-#[cfg(test)]
-mod scenario_tests;
-mod state;
-
-use crate::domain::{
+use bevy::prelude::*;
+use bevy_escape_template::domain::{
     clear::GameClear,
     input_buffer::{InputBuffer, reset_input_buffer},
     item::{INVENTORY_CAPACITY, Inventory, InventoryFullMessage, log_inventory_full},
@@ -14,8 +7,8 @@ use crate::domain::{
     selection::SelectedSlot,
     solved::{Solved, WrongAnswerMessage, log_quiz1_changes},
 };
-use crate::input::typing::append_typed_digits;
-use crate::presentation::{
+use bevy_escape_template::input::typing::append_typed_digits;
+use bevy_escape_template::presentation::{
     game_clear::{spawn_game_clear_screen, sync_game_clear_screen},
     inventory_slots::{spawn_inventory_slots, sync_inventory_slots},
     overview::{draw_hotspots, sync_hotspot5_visibility, sync_solution_indicator},
@@ -23,8 +16,7 @@ use crate::presentation::{
     zoom::zoom1::spawn_zoom1_screen,
     zoom::zoom2::{show_wrong_answer_feedback, spawn_zoom2_screen, sync_input_field_display},
 };
-use crate::state::{AppState, ZoomState};
-use bevy::prelude::*;
+use bevy_escape_template::state::{AppState, ZoomState};
 
 fn main() {
     let mut app = App::new();
