@@ -2,6 +2,8 @@ mod domain;
 mod input;
 mod layout;
 mod presentation;
+#[cfg(test)]
+mod scenario_tests;
 mod state;
 
 use crate::domain::{
