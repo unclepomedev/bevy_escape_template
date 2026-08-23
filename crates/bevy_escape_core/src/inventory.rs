@@ -63,6 +63,13 @@ pub struct RemoveItemAt<Item> {
     pub item_type: PhantomData<Item>,
 }
 
+pub fn remove_item_at<Item: Send + Sync + 'static>(index: usize) -> RemoveItemAt<Item> {
+    RemoveItemAt {
+        index,
+        item_type: PhantomData,
+    }
+}
+
 impl<Item: Send + Sync + 'static> Effect for RemoveItemAt<Item> {
     fn apply(self: Box<Self>, world: &mut World) {
         world.resource_mut::<Inventory<Item>>().slots[self.index] = None;
@@ -133,10 +140,7 @@ mod tests {
         apply_effects(vec![Box::new(GiveItem { item: "key1" })], &mut world);
         apply_effects(vec![Box::new(GiveItem { item: "key2" })], &mut world);
         apply_effects(
-            vec![Box::new(RemoveItemAt::<&'static str> {
-                index: 0,
-                item_type: PhantomData,
-            })],
+            vec![Box::new(remove_item_at::<&'static str>(0))],
             &mut world,
         );
 
@@ -151,10 +155,7 @@ mod tests {
         apply_effects(vec![Box::new(GiveItem { item: "key1" })], &mut world);
         apply_effects(vec![Box::new(GiveItem { item: "key2" })], &mut world);
         apply_effects(
-            vec![Box::new(RemoveItemAt::<&'static str> {
-                index: 0,
-                item_type: PhantomData,
-            })],
+            vec![Box::new(remove_item_at::<&'static str>(0))],
             &mut world,
         );
         apply_effects(vec![Box::new(GiveItem { item: "key3" })], &mut world);

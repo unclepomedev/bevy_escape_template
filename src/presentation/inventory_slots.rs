@@ -83,8 +83,8 @@ fn handle_slot_click(
         } => {
             commands.queue(move |world: &mut World| {
                 let effects: Vec<Box<dyn Effect>> = vec![
-                    Box::new(remove_item_at(selected_index)),
-                    Box::new(remove_item_at(clicked_index)),
+                    Box::new(remove_item_at::<ItemId>(selected_index)),
+                    Box::new(remove_item_at::<ItemId>(clicked_index)),
                     Box::new(GiveItem { item: result }),
                 ];
                 apply_effects(effects, world);

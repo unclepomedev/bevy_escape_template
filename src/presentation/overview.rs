@@ -182,8 +182,10 @@ fn on_hotspot4_click(
     }
 
     commands.queue(move |world: &mut World| {
-        let effects: Vec<Box<dyn Effect>> =
-            vec![Box::new(remove_item_at(index)), Box::new(UnlockRect5)];
+        let effects: Vec<Box<dyn Effect>> = vec![
+            Box::new(remove_item_at::<ItemId>(index)),
+            Box::new(UnlockRect5),
+        ];
         apply_effects(effects, world);
         world.resource_mut::<SelectedSlot>().index = None;
     });

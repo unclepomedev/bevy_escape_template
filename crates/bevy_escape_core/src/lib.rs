@@ -2,4 +2,4 @@ mod effect;
 mod inventory;
 
 pub use effect::{Effect, apply_effects};
-pub use inventory::{GiveItem, Inventory, InventoryFullMessage, RemoveItemAt};
+pub use inventory::{GiveItem, Inventory, InventoryFullMessage, RemoveItemAt, remove_item_at};
