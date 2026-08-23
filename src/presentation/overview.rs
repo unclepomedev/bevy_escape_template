@@ -1,3 +1,4 @@
+use crate::domain::clear::{ClearLabel, SetGameClear};
 use crate::domain::hotspot::{Hotspot1, Hotspot2, Hotspot4, Hotspot5};
 use crate::domain::item::{GiveItem, Inventory, ItemId, remove_item_at};
 use crate::domain::progress::{Progress, UnlockRect5};
@@ -40,7 +41,7 @@ fn draw_hotspot1(commands: &mut Commands, layout: &HotspotLayout) {
             Transform::from_xyz(layout.top_left_x, layout.top_row_y, 0.0),
             Pickable::default(),
         ))
-        .observe(open_zoom1);
+        .observe(on_hotspot1_click);
 }
 
 fn draw_hotspot2(commands: &mut Commands, layout: &HotspotLayout) {
@@ -111,8 +112,38 @@ fn draw_hotspot5(commands: &mut Commands, layout: &HotspotLayout) {
         .observe(on_hotspot5_click);
 }
 
-fn open_zoom1(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
-    next_zoom.set(ZoomState::Zoom1);
+fn on_hotspot1_click(
+    _click: On<Pointer<Click>>,
+    selected: Res<SelectedSlot>,
+    inventory: Res<Inventory>,
+    mut next_zoom: ResMut<NextState<ZoomState>>,
+    mut commands: Commands,
+) {
+    let selected_item = selected
+        .index
+        .and_then(|index| inventory.slot(index).copied());
+
+    match selected_item {
+        Some(ItemId::Key2) => {
+            commands.queue(|world: &mut World| {
+                let effects: Vec<Box<dyn Effect>> = vec![Box::new(SetGameClear {
+                    label: ClearLabel::Clear2,
+                })];
+                apply_effects(effects, world);
+            });
+        }
+        Some(ItemId::Key4) => {
+            commands.queue(|world: &mut World| {
+                let effects: Vec<Box<dyn Effect>> = vec![Box::new(SetGameClear {
+                    label: ClearLabel::Clear1,
+                })];
+                apply_effects(effects, world);
+            });
+        }
+        _ => {
+            next_zoom.set(ZoomState::Zoom1);
+        }
+    }
 }
 
 fn open_zoom2(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {

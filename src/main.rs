@@ -5,6 +5,7 @@ mod presentation;
 mod state;
 
 use crate::domain::{
+    clear::GameClear,
     input_buffer::{InputBuffer, reset_input_buffer},
     item::{INVENTORY_CAPACITY, Inventory, InventoryFullMessage, log_inventory_full},
     progress::Progress,
@@ -13,6 +14,7 @@ use crate::domain::{
 };
 use crate::input::typing::append_typed_digits;
 use crate::presentation::{
+    game_clear::{spawn_game_clear_screen, sync_game_clear_screen},
     inventory_slots::{spawn_inventory_slots, sync_inventory_slots},
     overview::{draw_hotspots, sync_hotspot5_visibility, sync_solution_indicator},
     zoom::despawn_zoom_screen,
@@ -31,13 +33,19 @@ fn main() {
         .init_resource::<Solved>()
         .init_resource::<Progress>()
         .init_resource::<SelectedSlot>()
+        .init_resource::<GameClear>()
         .insert_resource(Inventory::new(INVENTORY_CAPACITY));
     app.add_message::<WrongAnswerMessage>()
         .add_message::<InventoryFullMessage>();
 
     app.add_systems(
         Startup,
-        (setup_camera, draw_hotspots, spawn_inventory_slots),
+        (
+            setup_camera,
+            draw_hotspots,
+            spawn_inventory_slots,
+            spawn_game_clear_screen,
+        ),
     )
     .add_systems(OnEnter(ZoomState::Zoom1), spawn_zoom1_screen)
     .add_systems(OnExit(ZoomState::Zoom1), despawn_zoom_screen)
@@ -64,6 +72,7 @@ fn main() {
             sync_inventory_slots,
             log_inventory_full,
             sync_hotspot5_visibility,
+            sync_game_clear_screen,
         ),
     );
 
