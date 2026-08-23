@@ -19,6 +19,7 @@ pub type Inventory = CoreInventory<ItemId>;
 pub type GiveItem = CoreGiveItem<ItemId>;
 pub type InventoryFullMessage = CoreInventoryFullMessage<ItemId>;
 pub type RemoveItemAt = CoreRemoveItemAt<ItemId>;
+pub type WrongItemMessage = bevy_escape_core::WrongActionMessage<ItemId>;
 
 pub fn remove_item_at(index: usize) -> RemoveItemAt {
     bevy_escape_core::remove_item_at::<ItemId>(index)

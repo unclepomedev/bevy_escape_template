@@ -5,6 +5,7 @@ mod hotspot5;
 mod hotspot6;
 mod solution_indicator;
 
+pub use hotspot4::log_wrong_item_on_hotspot4;
 pub use hotspot5::sync_hotspot5_visibility;
 pub use solution_indicator::sync_solution_indicator;
 

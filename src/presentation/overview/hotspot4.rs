@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_escape_core::{Effect, apply_effects};
 
 use crate::domain::hotspot::Hotspot4;
-use crate::domain::item::{Inventory, ItemId, remove_item_at};
+use crate::domain::item::{Inventory, ItemId, WrongItemMessage, remove_item_at};
 use crate::domain::progress::UnlockRect5;
 use crate::domain::selection::SelectedSlot;
 use crate::layout::HotspotLayout;
@@ -33,10 +33,15 @@ fn on_hotspot4_click(
     let Some(index) = selected.index else {
         return;
     };
-    let Some(item) = inventory.slot(index) else {
+    let Some(item) = inventory.slot(index).copied() else {
         return;
     };
-    if *item != ItemId::Key1 {
+
+    if item != ItemId::Key1 {
+        commands.queue(move |world: &mut World| {
+            let effects: Vec<Box<dyn Effect>> = vec![Box::new(WrongItemMessage { detail: item })];
+            apply_effects(effects, world);
+        });
         return;
     }
 
@@ -46,4 +51,10 @@ fn on_hotspot4_click(
         apply_effects(effects, world);
         world.resource_mut::<SelectedSlot>().index = None;
     });
+}
+
+pub fn log_wrong_item_on_hotspot4(mut messages: MessageReader<WrongItemMessage>) {
+    for message in messages.read() {
+        info!("wrong item used on hotspot4: {:?}", message.detail);
+    }
 }
