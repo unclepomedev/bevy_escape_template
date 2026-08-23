@@ -96,16 +96,19 @@ fn draw_hotspot4(commands: &mut Commands, layout: &HotspotLayout) {
 fn draw_hotspot5(commands: &mut Commands, layout: &HotspotLayout) {
     let color = Color::srgb(0.9, 0.7, 0.4);
 
-    commands.spawn((
-        Hotspot5,
-        Sprite {
-            color,
-            custom_size: Some(layout.size),
-            ..default()
-        },
-        Transform::from_xyz(layout.top_center_x, layout.middle_row_y, 0.0),
-        Visibility::Hidden,
-    ));
+    commands
+        .spawn((
+            Hotspot5,
+            Sprite {
+                color,
+                custom_size: Some(layout.size),
+                ..default()
+            },
+            Transform::from_xyz(layout.top_center_x, layout.middle_row_y, 0.0),
+            Visibility::Hidden,
+            Pickable::default(),
+        ))
+        .observe(on_hotspot5_click);
 }
 
 fn open_zoom1(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
@@ -159,6 +162,13 @@ fn on_hotspot4_click(
             vec![Box::new(remove_item_at(index)), Box::new(UnlockRect5)];
         apply_effects(effects, world);
         world.resource_mut::<SelectedSlot>().index = None;
+    });
+}
+
+fn on_hotspot5_click(_click: On<Pointer<Click>>, mut commands: Commands) {
+    commands.queue(|world: &mut World| {
+        let effects: Vec<Box<dyn Effect>> = vec![Box::new(GiveItem { item: ItemId::Key3 })];
+        apply_effects(effects, world);
     });
 }
 
