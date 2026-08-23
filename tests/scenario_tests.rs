@@ -88,8 +88,8 @@ fn combining_two_key3s_then_using_key4_reaches_clear1() {
     );
 
     let effects: Vec<Box<dyn Effect>> = vec![
-        Box::new(remove_item_at::<ItemId>(0)),
-        Box::new(remove_item_at::<ItemId>(1)),
+        Box::new(remove_item_at(0)),
+        Box::new(remove_item_at(1)),
         Box::new(GiveItem { item: ItemId::Key4 }),
     ];
     apply_effects(effects, app.world_mut());
@@ -124,8 +124,7 @@ fn using_key1_on_hotspot4_consumes_it_and_unlocks_rect5() {
         app.world_mut(),
     );
 
-    let effects: Vec<Box<dyn Effect>> =
-        vec![Box::new(remove_item_at::<ItemId>(0)), Box::new(UnlockRect5)];
+    let effects: Vec<Box<dyn Effect>> = vec![Box::new(remove_item_at(0)), Box::new(UnlockRect5)];
     apply_effects(effects, app.world_mut());
 
     assert_eq!(app.world().resource::<Inventory>().slot(0), None);
@@ -139,7 +138,7 @@ fn a_slot_freed_by_one_item_can_be_reused_by_a_different_item_type() {
         vec![Box::new(GiveItem { item: ItemId::Key1 })],
         app.world_mut(),
     );
-    apply_effects(vec![Box::new(remove_item_at::<ItemId>(0))], app.world_mut());
+    apply_effects(vec![Box::new(remove_item_at(0))], app.world_mut());
     apply_effects(
         vec![Box::new(GiveItem { item: ItemId::Key3 })],
         app.world_mut(),
