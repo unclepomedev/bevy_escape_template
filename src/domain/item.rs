@@ -7,7 +7,6 @@ use std::marker::PhantomData;
 
 pub const INVENTORY_CAPACITY: usize = 4;
 
-#[expect(dead_code)]
 #[derive(Eq, PartialEq, Hash, Clone, Copy, Debug)]
 pub enum ItemId {
     Key1,

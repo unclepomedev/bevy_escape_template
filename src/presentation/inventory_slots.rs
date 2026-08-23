@@ -1,8 +1,9 @@
-use crate::domain::item::{INVENTORY_CAPACITY, Inventory, ItemId};
-use crate::domain::selection::{SelectedSlot, toggle_slot_selection};
+use crate::domain::item::{GiveItem, INVENTORY_CAPACITY, Inventory, ItemId, remove_item_at};
+use crate::domain::selection::{SelectedSlot, SlotClickOutcome, resolve_slot_click};
 use crate::layout::calculate_inventory_slot_layout;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
+use bevy_escape_core::{Effect, apply_effects};
 
 #[derive(Component)]
 pub struct InventorySlotDisplay {
@@ -38,8 +39,9 @@ pub fn spawn_inventory_slots(mut commands: Commands, windows: Query<&Window, Wit
             .observe(
                 move |_click: On<Pointer<Click>>,
                       inventory: Res<Inventory>,
-                      mut selected: ResMut<SelectedSlot>| {
-                    toggle_slot_selection(index, &inventory, &mut selected);
+                      selected: Res<SelectedSlot>,
+                      mut commands: Commands| {
+                    handle_slot_click(index, &inventory, &selected, &mut commands);
                 },
             );
 
@@ -53,6 +55,42 @@ pub fn spawn_inventory_slots(mut commands: Commands, windows: Query<&Window, Wit
             },
             Transform::from_xyz(position.x, position.y, 1.1),
         ));
+    }
+}
+
+fn handle_slot_click(
+    clicked_index: usize,
+    inventory: &Inventory,
+    selected: &SelectedSlot,
+    commands: &mut Commands,
+) {
+    match resolve_slot_click(clicked_index, inventory, selected) {
+        SlotClickOutcome::NoOp => {}
+        SlotClickOutcome::Deselect => {
+            commands.queue(|world: &mut World| {
+                world.resource_mut::<SelectedSlot>().index = None;
+            });
+        }
+        SlotClickOutcome::Select { index } => {
+            commands.queue(move |world: &mut World| {
+                world.resource_mut::<SelectedSlot>().index = Some(index);
+            });
+        }
+        SlotClickOutcome::Combine {
+            selected_index,
+            clicked_index,
+            result,
+        } => {
+            commands.queue(move |world: &mut World| {
+                let effects: Vec<Box<dyn Effect>> = vec![
+                    Box::new(remove_item_at(selected_index)),
+                    Box::new(remove_item_at(clicked_index)),
+                    Box::new(GiveItem { item: result }),
+                ];
+                apply_effects(effects, world);
+                world.resource_mut::<SelectedSlot>().index = None;
+            });
+        }
     }
 }
 
