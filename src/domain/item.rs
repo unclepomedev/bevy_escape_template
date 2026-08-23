@@ -12,6 +12,7 @@ pub enum ItemId {
     Key2,
     Key3,
     Key4,
+    Key5,
 }
 
 pub type Inventory = CoreInventory<ItemId>;

@@ -33,13 +33,13 @@ pub fn resolve_slot_click(
         Some(selected_index) if selected_index == clicked_index => SlotClickOutcome::Deselect,
         Some(selected_index) => {
             let selected_item = inventory.slot(selected_index).copied();
-            match (selected_item, clicked_item) {
-                (Some(ItemId::Key3), ItemId::Key3) => SlotClickOutcome::Combine {
+            match selected_item.and_then(|selected_item| combine(selected_item, clicked_item)) {
+                Some(result) => SlotClickOutcome::Combine {
                     selected_index,
                     clicked_index,
-                    result: ItemId::Key4,
+                    result,
                 },
-                _ => SlotClickOutcome::Select {
+                None => SlotClickOutcome::Select {
                     index: clicked_index,
                 },
             }
@@ -47,6 +47,16 @@ pub fn resolve_slot_click(
         None => SlotClickOutcome::Select {
             index: clicked_index,
         },
+    }
+}
+
+/// The full set of combination recipes. `a` is the already-selected item,
+/// `b` is the item that was just clicked.
+fn combine(a: ItemId, b: ItemId) -> Option<ItemId> {
+    match (a, b) {
+        (ItemId::Key3, ItemId::Key3) => Some(ItemId::Key4),
+        (ItemId::Key1, ItemId::Key3) | (ItemId::Key3, ItemId::Key1) => Some(ItemId::Key5),
+        _ => None,
     }
 }
 
@@ -118,6 +128,34 @@ mod tests {
                 selected_index: 0,
                 clicked_index: 1,
                 result: ItemId::Key4,
+            }
+        );
+    }
+
+    #[test]
+    fn combining_key1_selected_then_key3_clicked_makes_key5() {
+        let inventory = inventory_with(&[ItemId::Key1, ItemId::Key3]);
+        let selected = SelectedSlot { index: Some(0) };
+        assert_eq!(
+            resolve_slot_click(1, &inventory, &selected),
+            SlotClickOutcome::Combine {
+                selected_index: 0,
+                clicked_index: 1,
+                result: ItemId::Key5,
+            }
+        );
+    }
+
+    #[test]
+    fn combining_key3_selected_then_key1_clicked_also_makes_key5() {
+        let inventory = inventory_with(&[ItemId::Key3, ItemId::Key1]);
+        let selected = SelectedSlot { index: Some(0) };
+        assert_eq!(
+            resolve_slot_click(1, &inventory, &selected),
+            SlotClickOutcome::Combine {
+                selected_index: 0,
+                clicked_index: 1,
+                result: ItemId::Key5,
             }
         );
     }
