@@ -124,26 +124,19 @@ fn on_hotspot1_click(
         .and_then(|index| inventory.slot(index).copied());
 
     match selected_item {
-        Some(ItemId::Key2) => {
-            commands.queue(|world: &mut World| {
-                let effects: Vec<Box<dyn Effect>> = vec![Box::new(SetGameClear {
-                    label: ClearLabel::Clear2,
-                })];
-                apply_effects(effects, world);
-            });
-        }
-        Some(ItemId::Key4) => {
-            commands.queue(|world: &mut World| {
-                let effects: Vec<Box<dyn Effect>> = vec![Box::new(SetGameClear {
-                    label: ClearLabel::Clear1,
-                })];
-                apply_effects(effects, world);
-            });
-        }
+        Some(ItemId::Key2) => set_game_clear(&mut commands, ClearLabel::Clear2),
+        Some(ItemId::Key4) => set_game_clear(&mut commands, ClearLabel::Clear1),
         _ => {
             next_zoom.set(ZoomState::Zoom1);
         }
     }
+}
+
+fn set_game_clear(commands: &mut Commands, label: ClearLabel) {
+    commands.queue(move |world: &mut World| {
+        let effects: Vec<Box<dyn Effect>> = vec![Box::new(SetGameClear { label })];
+        apply_effects(effects, world);
+    });
 }
 
 fn open_zoom2(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
