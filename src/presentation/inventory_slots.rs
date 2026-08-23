@@ -132,5 +132,6 @@ fn item_label(item: ItemId) -> String {
         ItemId::Key2 => "key2".to_string(),
         ItemId::Key3 => "key3".to_string(),
         ItemId::Key4 => "key4".to_string(),
+        ItemId::Key5 => "key5".to_string(),
     }
 }

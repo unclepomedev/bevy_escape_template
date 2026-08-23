@@ -11,3 +11,6 @@ pub struct Hotspot4;
 
 #[derive(Component)]
 pub struct Hotspot5;
+
+#[derive(Component)]
+pub struct Hotspot6;

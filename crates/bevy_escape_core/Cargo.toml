@@ -2,10 +2,10 @@
 name = "bevy_escape_core"
 version = "0.0.1"
 edition = "2024"
-description = ""
+description = "Type-erased effect application and a capacity-bounded inventory for Bevy escape games"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/unclepomedev/bevy_escape_template"
+readme = "README.md"
 
-# TODO: organize
 [dependencies]
 bevy_ecs = { version = "0.19", default-features = false, features = ["std"] }
