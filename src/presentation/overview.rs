@@ -1,9 +1,12 @@
+use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
+use bevy_escape_core::{Effect, apply_effects};
+
 use crate::domain::hotspot::{Hotspot1, Hotspot2};
+use crate::domain::item::{GiveItem, ItemId};
 use crate::domain::solved::{Solution1, Solved};
 use crate::layout::{HotspotLayout, calculate_hotspot_layout};
 use crate::state::ZoomState;
-use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
 
 #[derive(Component)]
 pub struct SolutionIndicator;
@@ -55,16 +58,19 @@ fn draw_hotspot2(commands: &mut Commands, layout: &HotspotLayout) {
 }
 
 fn draw_solution_indicator(commands: &mut Commands, layout: &HotspotLayout) {
-    commands.spawn((
-        SolutionIndicator,
-        Sprite {
-            color: Color::NONE,
-            custom_size: Some(layout.size),
-            ..default()
-        },
-        Transform::from_xyz(layout.top_right_x, layout.top_row_y, 0.0),
-        Visibility::Hidden,
-    ));
+    commands
+        .spawn((
+            SolutionIndicator,
+            Sprite {
+                color: Color::NONE,
+                custom_size: Some(layout.size),
+                ..default()
+            },
+            Transform::from_xyz(layout.top_right_x, layout.top_row_y, 0.0),
+            Visibility::Hidden,
+            Pickable::default(),
+        ))
+        .observe(on_solution_indicator_click);
 }
 
 fn open_zoom1(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
@@ -73,6 +79,27 @@ fn open_zoom1(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomSt
 
 fn open_zoom2(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
     next_zoom.set(ZoomState::Zoom2);
+}
+
+fn on_solution_indicator_click(
+    _click: On<Pointer<Click>>,
+    solved: Res<Solved>,
+    mut commands: Commands,
+) {
+    let item = match solved.quiz1 {
+        Solution1::Answer3 => Some(ItemId::Key1),
+        Solution1::Answer12 => Some(ItemId::Key2),
+        Solution1::Unsolved => None,
+    };
+
+    let Some(item) = item else {
+        return;
+    };
+
+    commands.queue(move |world: &mut World| {
+        let effects: Vec<Box<dyn Effect>> = vec![Box::new(GiveItem { item })];
+        apply_effects(effects, world);
+    });
 }
 
 pub fn sync_solution_indicator(

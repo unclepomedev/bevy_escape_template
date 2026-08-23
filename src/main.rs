@@ -4,9 +4,11 @@ mod layout;
 mod presentation;
 mod state;
 
-use crate::domain::input_buffer::{InputBuffer, reset_input_buffer};
-use crate::domain::item::{INVENTORY_CAPACITY, Inventory, InventoryFullMessage};
-use crate::domain::solved::{Solved, WrongAnswerMessage, log_quiz1_changes};
+use crate::domain::{
+    input_buffer::{InputBuffer, reset_input_buffer},
+    item::{INVENTORY_CAPACITY, Inventory, InventoryFullMessage, log_inventory_full},
+    solved::{Solved, WrongAnswerMessage, log_quiz1_changes},
+};
 use crate::input::typing::append_typed_digits;
 use crate::presentation::{
     inventory_slots::{spawn_inventory_slots, sync_inventory_slots},
@@ -56,6 +58,7 @@ fn main() {
             log_quiz1_changes,
             sync_solution_indicator,
             sync_inventory_slots,
+            log_inventory_full,
         ),
     );
 
