@@ -26,7 +26,7 @@ pub fn draw_hotspot1(commands: &mut Commands, layout: &HotspotLayout) {
 }
 
 fn on_hotspot1_click(
-    _click: On<Pointer<Click>>,
+    _click: On<PointerClick>,
     selected: Res<SelectedSlot>,
     inventory: Res<Inventory>,
     mut next_zoom: ResMut<NextState<ZoomState>>,

@@ -24,7 +24,7 @@ pub fn draw_hotspot5(commands: &mut Commands, layout: &HotspotLayout) {
         .observe(on_hotspot5_click);
 }
 
-fn on_hotspot5_click(_click: On<Pointer<Click>>, mut commands: Commands) {
+fn on_hotspot5_click(_click: On<PointerClick>, mut commands: Commands) {
     commands.queue(|world: &mut World| {
         let effects: Vec<Box<dyn Effect>> = vec![Box::new(GiveItem { item: ItemId::Key3 })];
         apply_effects(effects, world);

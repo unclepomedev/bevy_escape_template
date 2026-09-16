@@ -105,7 +105,7 @@ fn spawn_feedback_display(commands: &mut Commands) {
 }
 
 fn on_confirm_click(
-    _click: On<Pointer<Click>>,
+    _click: On<PointerClick>,
     input_buffer: Res<InputBuffer>,
     mut commands: Commands,
 ) {
