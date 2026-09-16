@@ -37,7 +37,7 @@ pub fn spawn_inventory_slots(mut commands: Commands, windows: Query<&Window, Wit
                 Pickable::default(),
             ))
             .observe(
-                move |_click: On<Pointer<Click>>,
+                move |_click: On<PointerClick>,
                       inventory: Res<Inventory>,
                       selected: Res<SelectedSlot>,
                       mut commands: Commands| {

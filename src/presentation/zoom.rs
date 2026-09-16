@@ -17,6 +17,6 @@ pub fn despawn_zoom_screen(
     }
 }
 
-pub fn close_zoom_screen(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
+pub fn close_zoom_screen(_click: On<PointerClick>, mut next_zoom: ResMut<NextState<ZoomState>>) {
     next_zoom.set(ZoomState::Overview);
 }

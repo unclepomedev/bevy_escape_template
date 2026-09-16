@@ -21,6 +21,6 @@ pub fn draw_hotspot2(commands: &mut Commands, layout: &HotspotLayout) {
         .observe(open_zoom2);
 }
 
-fn open_zoom2(_click: On<Pointer<Click>>, mut next_zoom: ResMut<NextState<ZoomState>>) {
+fn open_zoom2(_click: On<PointerClick>, mut next_zoom: ResMut<NextState<ZoomState>>) {
     next_zoom.set(ZoomState::Zoom2);
 }

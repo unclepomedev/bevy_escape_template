@@ -8,8 +8,9 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/unclepomedev/bevy_escape_template"
 
 [dependencies]
-bevy = { version = "0.19", features = ["debug"] }
-bevy_escape_core = { version = "0.0.1", path = "crates/bevy_escape_core" }
+# TODO: to 0.20
+bevy = { version = "0.20.0-rc.1", features = ["debug"] }
+bevy_escape_core = { version = "0.0.2", path = "crates/bevy_escape_core" }
 
 [workspace]
 members = [".", "crates/bevy_escape_core"]
