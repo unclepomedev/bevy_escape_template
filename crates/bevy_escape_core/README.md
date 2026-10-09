@@ -67,6 +67,12 @@ Items fill the first empty slot in acquisition order. Removed slots stay empty (
 
 See `src/` in this repository for a real game using it.
 
+## Compatible Bevy versions
+
+| Bevy version | `bevy_escape_core` version |
+|:-------------|:---------------------------|
+| `0.20`       | `0.1`                      |
+
 ## License
 
 MIT or Apache-2.0
